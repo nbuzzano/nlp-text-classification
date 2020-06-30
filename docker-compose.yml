@@ -1,0 +1,66 @@
+version: '3.7'
+
+services:
+
+    rabbitmq:
+        image: rabbitmq:3-management
+        ports:
+        - 5672:5672
+        - 15672:15672
+
+    db:
+      image: mysql:8
+      command: --default-authentication-plugin=mysql_native_password
+      restart: always
+      environment:
+        MYSQL_ROOT_PASSWORD: dada
+      ports:
+      - 3306:3306
+      - 22:22
+      volumes:
+      - ./docker_db_definition:/docker-entrypoint-initdb.d
+      #https://hub.docker.com/_/mysql
+      #When a container is started for the first time, a new database with the specified name
+        #will be created and initialized with the provided configuration variables.
+        #Furthermore, it will execute files with extensions .sh, .sql and .sql.gz that are
+        #found in /docker-entrypoint-initdb.d.
+
+    web:
+      image: nbuzzano/flask-app
+      build:
+        context: .
+        dockerfile: ./flask-app/Dockerfile
+        #https://docs.docker.com/compose/compose-file/#context
+
+      command: python api.py
+      #https://docs.docker.com/compose/startup-order/
+
+      depends_on:
+        - db
+      #depends_on does not wait for db and redis
+      #to be “ready” before starting web - only until they have been started.
+
+      env_file:
+        - ./flask-app/config.env
+      ports:
+        - 5000:5000
+      volumes:
+        - ./flask-app:/opt/flask-app
+        - ./storage:/opt/storage
+        #dependiendo lo que necesite podria hacer: - ./storage/files:/opt/storage/files
+
+    job:
+      image: nbuzzano/job
+      build:
+        context: .
+        dockerfile: ./job/Dockerfile
+      command: python job.py
+      depends_on:
+        - db
+        - rabbitmq
+      env_file:
+        - ./flask-app/config.env
+      volumes:
+        - ./storage:/opt/storage
+
+

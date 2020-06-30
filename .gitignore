@@ -1,0 +1,31 @@
+assignment/
+experiments/dataset/
+experiments/.ipynb_checkpoints
+
+## test.py is just for locally testing purposes
+utils/test.py
+
+## Virtual environment
+venv/
+.venv/
+
+## All pychaches
+*__pycache__*
+
+## won't push storage files
+storage/files/
+
+## won't push pycharm files
+*.idea
+
+## won't push following extensions
+*.vec
+*.bin
+*.log
+*.env
+*.pkl
+*.npz
+
+## won't push setuptools files
+utils/utils.egg-info/
+utils/dist/

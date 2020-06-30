@@ -1,0 +1,13 @@
+FROM python:3
+
+# copy our application code
+ADD ./job /opt/job
+ADD ./utils /opt/utils
+ADD ./experiments/prediction.py /opt/experiments/prediction.py
+
+# set a directory for the app
+WORKDIR /opt/job
+
+# install dependencies
+RUN pip install --no-cache-dir -r requirements.txt
+RUN python /opt/utils/setup.py install
