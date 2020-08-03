@@ -25,6 +25,8 @@ storage/files/
 *.env
 *.pkl
 *.npz
+*.npy
+*.pyc
 
 ## won't push setuptools files
 utils/utils.egg-info/
