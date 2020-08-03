@@ -1,17 +1,13 @@
-# ML ARQ ! 
+# Letters classification ! 
 
-This is a fun application built with the only purpose of learning how [Docker](https://www.docker.com) works and also learning to create a basic ML ARQ. The app is built with [Flask](http://flask.pocoo.org/), [RabbitMQ](https://www.rabbitmq.com) and [MySQL](https://www.mysql.com) on the backend.
+In this repository you can find the development of a service for an application that analyzes public documents. The solutions covers preprocessing and classification of texts.
 
+This repository consists of:
 
-### Running the app
+- An ETL file where all the features that will be consumed on the project are created.
 
-There are two different ways of getting the app up and running:
+- Config folder: settings parameters of predictive models, etc can be found here.
 
-####  Docker Compose
-```
-$ docker-compose up
-```
+- Data exploration folder: files in which the dataset is explored, looking for insights which could be usefull for the business and/or the data prediction stage.
 
-####  Mannualy
-If you choose this way, you must change the database host to "localhost" or the one that fit to your purposes, since it is setted up to run using Docker engine.
-
+- Data prediction folder: prediction models!
