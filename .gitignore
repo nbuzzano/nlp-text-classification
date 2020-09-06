@@ -1,6 +1,6 @@
 assignment/
 experiments/dataset/
-experiments/.ipynb_checkpoints
+*.ipynb_checkpoints
 
 ## test.py is just for locally testing purposes
 utils/test.py
