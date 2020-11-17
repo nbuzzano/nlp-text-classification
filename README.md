@@ -1,13 +1,11 @@
-# Letters classification ! 
+# NLP: letters classification ! 
 
 In this repository you can find the development of a service for an application that analyzes public documents. The solutions covers preprocessing and classification of texts.
 
-This repository consists of:
+### Discussion:
 
-- An ETL file where all the features that will be consumed on the project are created.
+- `dags`: Airflow pipeline can be found here.
 
-- Config folder: settings parameters of predictive models, etc can be found here.
+- `notebooks`: Here we explore the dataset, we look for insights that provide information to the business and in the modeling stage.
 
-- Data exploration folder: files in which the dataset is explored, looking for insights which could be usefull for the business and/or the data prediction stage.
-
-- Data prediction folder: prediction models!
+- `source`: Here you can find custom tools, prediction machine learning models and locally the dataset is stored here.
