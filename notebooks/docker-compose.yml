@@ -1,0 +1,14 @@
+version: '3'
+services:
+  nlp-jupyter-notebook:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    image: my-jupyter-notebook # image name
+    volumes:
+      - ./data-exploration:/home/jovyan/work/data-exploration
+      - ../source/features:/home/jovyan/work/source/features
+      - ../source/dataset:/home/jovyan/work/source/dataset
+    ports:
+      - "8889:8888"
+      
