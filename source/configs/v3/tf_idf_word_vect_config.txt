@@ -1,0 +1,5 @@
+{
+"analyzer": "word",
+"token_pattern": r'\w{1,}',
+"max_features": 5000
+}

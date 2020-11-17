@@ -31,7 +31,6 @@ storage/files/
 *.npz
 *.npy
 *.pyc
-*.txt
 *.python_history
 *.pid
 *.cfg
