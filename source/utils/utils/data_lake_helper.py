@@ -5,16 +5,17 @@ import ast
 
 class DataLake:
     
-    path = 'features/'
+    main_path = 'source/'
     
     def __init__(self, version):
         self.version = version 
-        self.version_path = self.path + version + "/"
+        features_path = 'features/'
+        self.version_path = self.main_path + features_path + version + "/"
         
         #create version folder if not exists
-        if not os.path.exists(self.path + self.version):
+        if not os.path.exists(self.version_path[:-1]):
             try:
-                os.makedirs(self.path + self.version)
+                os.makedirs(self.version_path[:-1])
             except OSError as e:
                 if e.errno != errno.EEXIST:
                     raise
@@ -34,7 +35,7 @@ class DataLake:
             return pickle.load(input)
         
     def load_config(self, file_name):
-        config_path = 'configs/' + self.version + "/"
+        config_path = self.main_path + 'configs/' + self.version + "/"
         file = open(config_path + file_name, "r")
         contents = file.read()
         return ast.literal_eval(contents)

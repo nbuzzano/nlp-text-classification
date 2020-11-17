@@ -1,9 +1,13 @@
 assignment/
-experiments/dataset/
+source/dataset/
 *.ipynb_checkpoints
+logs/
 
-## test.py is just for locally testing purposes
-utils/test.py
+source/features/
+source/utils/utils.egg-info/
+source/utils/dist/
+source/utils/build/
+source/utils/test.py
 
 ## Virtual environment
 venv/
@@ -39,6 +43,4 @@ storage/files/
 nltk_data/
 
 
-## won't push setuptools files
-utils/utils.egg-info/
-utils/dist/
+

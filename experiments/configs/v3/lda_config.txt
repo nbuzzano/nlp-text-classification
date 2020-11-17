@@ -1,5 +1,0 @@
-{
-"max_iter": 20,
-"n_components": 100,
-"learning_method": "online"
-}
