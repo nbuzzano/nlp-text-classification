@@ -27,6 +27,17 @@ storage/files/
 *.npz
 *.npy
 *.pyc
+*.txt
+*.python_history
+*.pid
+*.cfg
+*.parquet
+*.crc
+*.egg
+.local/
+.cache/
+nltk_data/
+
 
 ## won't push setuptools files
 utils/utils.egg-info/
