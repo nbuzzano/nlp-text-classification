@@ -7,11 +7,4 @@ setup(
     description="",
     long_description="",
     packages=["utils"],#packages=find_packages(),
-    install_requires=[
-        'scipy',
-        'pandas',
-        'sklearn',
-        'nltk',
-        'xgboost'
-    ],
 )

@@ -7,19 +7,19 @@ from airflow.operators.subdag_operator import SubDagOperator
 from datetime import timedelta
 import utils.data_lake_helper as dl_helper
 
-import raw_features
-from raw_features import feature_extr_sub_dag
+import preprocessing.raw_features as raw_features
+from preprocessing.raw_features import feature_extr_sub_dag
 
-import vector_features
-from vector_features import vector_extr_sub_dag
+import preprocessing.vector_features as vector_features
+from preprocessing.vector_features import vector_extr_sub_dag
 
-import xgboost_subdag
-from xgboost_subdag import xgboost_sub_dag
+import modeling.xgboost_subdag as xgboost_subdag
+from modeling.xgboost_subdag import xgboost_sub_dag
 
-import naive_bayes_subdag
-from naive_bayes_subdag import naive_bayes_sub_dag
+import modeling.naive_bayes_subdag as naive_bayes_subdag
+from modeling.naive_bayes_subdag import naive_bayes_sub_dag
 
-from report_subdag import report_sub_dag
+from reporting.report_subdag import report_sub_dag
 
 default_args = {
     'owner': 'airflow',

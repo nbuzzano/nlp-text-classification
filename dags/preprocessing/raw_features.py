@@ -9,11 +9,12 @@ from airflow.operators.dummy_operator import DummyOperator
 from airflow.operators.python_operator import PythonOperator
 from airflow.operators.subdag_operator import SubDagOperator
 
-from features_utils import get_main_spark_df
+from features_utils import get_main_df
 
-from pyspark.sql.functions import udf
-from pyspark.sql.types import *
-from pyspark.sql.functions import *
+#spark way
+#from pyspark.sql.functions import udf
+#from pyspark.sql.types import *
+#from pyspark.sql.functions import *
 
 main_path = None
 data_lake = None
@@ -49,9 +50,29 @@ def extract_feature(f, pk_id, path_):
 
 
 def map_feature(feature):
-    df = get_main_spark_df()
-    
-    partial_extract_feature = partial(extract_feature, feature)
+	df = get_main_df()
+
+	transformed_feature = []
+	for i in range(0,len(df)):
+		item = df.iloc[i]
+		pk_id = str(item.name)
+		text = open(item.path + pk_id + '.txt').read()
+
+		t = feature.transform(text)
+		transformed_feature.append(t)
+
+	df[feature.name] = transformed_feature
+	feature_as_serie = df[feature.name]
+	data_lake.save_obj(feature_as_serie, feature.name + '.pkl')
+	del df[feature.name]
+
+
+def map_feature_v2(feature):
+	#spark way
+	
+	df = get_main_spark_df()
+
+	partial_extract_feature = partial(extract_feature, feature)
 	udf_partial_extract_feature = udf(partial_extract_feature, StringType())
 	feature_extracted = df.withColumn(feature.name, udf_partial_extract_feature("pk_id", "path"))
 
@@ -90,24 +111,32 @@ def get_prefix_features(features):
 
 
 def get_word_density():
+	letter_lenght = data_lake.load_obj(Features.Length().name + '.pkl')
+	word_count = data_lake.load_obj(Features.Word_Count().name + '.pkl')
+	word_density = letter_lenght/(word_count+1)
+	data_lake.save_obj(word_density, 'word_density.pkl')
+
+
+def get_word_density_v2():
+	#spark way
 	
 	#p = 'source/features/' + data_lake.version + <feature-name>
 	
 	path = "data/" + Features.Length().name + "_parquet"
-    letter_lenght = pd.read_parquet(path, engine='pyarrow')#fastparquet
-    letter_lenght["letter_lenght"] = letter_lenght["letter_lenght"].astype(int) 
-    
-    path = "data/" + Features.Word_Count().name + "_parquet"
-    word_count = pd.read_parquet(path, engine='pyarrow')#fastparquet
-    word_count["word_count"] = word_count["word_count"].astype(int) 
-    
-    word_density = letter_lenght["letter_lenght"]/(word_count["word_count"]+1)
-    word_density = pd.DataFrame(word_density)
-    word_density.index = letter_lenght.pk_id
-    word_density.columns = ['word_density']
-    
-    wd_name = 'word_density'
-    word_density.to_parquet("data/" + wd_name + "_parquet", engine='pyarrow')
+	letter_lenght = pd.read_parquet(path, engine='pyarrow')#fastparquet
+	letter_lenght["letter_lenght"] = letter_lenght["letter_lenght"].astype(int) 
+
+	path = "data/" + Features.Word_Count().name + "_parquet"
+	word_count = pd.read_parquet(path, engine='pyarrow')#fastparquet
+	word_count["word_count"] = word_count["word_count"].astype(int) 
+
+	word_density = letter_lenght["letter_lenght"]/(word_count["word_count"]+1)
+	word_density = pd.DataFrame(word_density)
+	word_density.index = letter_lenght.pk_id
+	word_density.columns = ['word_density']
+
+	wd_name = 'word_density'
+	word_density.to_parquet("data/" + wd_name + "_parquet", engine='pyarrow')
 
 
 def feature_extr_sub_dag(parent_dag_name, child_dag_name, args, schedule_interval):

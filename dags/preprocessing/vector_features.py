@@ -24,6 +24,7 @@ def init(main_path_, data_lake_, file_extension_):
 	data_lake = data_lake_
 	file_extension = file_extension_
 
+
 def fit_vector(vector):
     f_name = 'text_normalized'
     df = get_main_df()

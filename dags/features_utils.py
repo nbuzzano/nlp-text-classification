@@ -1,16 +1,18 @@
 import pandas as pd
 
-from pyspark.sql import SparkSession
-from pyspark.sql.functions import *
-from pyspark.sql.functions import lit
-
 # Create Spark session
-spark = SparkSession.builder \
-    .master("local") \
-    .config("spark.sql.autoBroadcastJoinThreshold", -1) \
-    .config("spark.executor.memory", "500mb") \
-    .appName("Test01") \
-    .getOrCreate()
+spark_active = False
+if spark_active:
+    from pyspark.sql import SparkSession
+    from pyspark.sql.functions import *
+    from pyspark.sql.functions import lit
+
+    spark = SparkSession.builder \
+        .master("local") \
+        .config("spark.sql.autoBroadcastJoinThreshold", -1) \
+        .config("spark.executor.memory", "500mb") \
+        .appName("Test01") \
+        .getOrCreate()
 
 
 def get_main_spark_df():

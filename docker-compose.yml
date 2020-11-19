@@ -10,14 +10,13 @@ services:
       - "5432:5432"
 
   webserver:
-    image: puckel/docker-airflow:1.10.9
+    image: puckel/docker-airflow #:1.10.9
     build:
-      context: https://github.com/puckel/docker-airflow.git#1.10.9
+      context: . #https://github.com/puckel/docker-airflow.git#1.10.9
       dockerfile: Dockerfile
       args:
         AIRFLOW_DEPS: gcp_api,s3
-        PYTHON_DEPS: sqlalchemy==1.2.0 #scipy pandas #package dependecies will be installed from the setup.py file 
-        #installing a few dependencies on the airflow container
+        PYTHON_DEPS: sqlalchemy==1.2.0 pandas scipy nltk sklearn xgboost
     restart: always
     depends_on:
       - postgres
@@ -27,11 +26,12 @@ services:
       - FERNET_KEY=jsDPRErfv8Z_eVTnGfF8ywd19j4pyqE3NpdUBA_oRTo=
       #https://github.com/puckel/docker-airflow/tree/1.10.0-5#usage
     volumes:
-      - ./:/usr/local/airflow
+      #- ./:/usr/local/airflow
       #ESTO DEBERIA SER 
-      #- ./dags:/usr/local/airflow/dags
-      #- ./source:/usr/local/airflow/source
-      #- ./logs:/usr/local/airflow/logs
+      - ./dags:/usr/local/airflow/dags
+      - ./source:/usr/local/airflow/source
+      - ./nltk_data:/usr/local/airflow/nltk_data
+      - ./logs:/usr/local/airflow/logs
     ports:
       - "8081:8080"
     command: webserver
@@ -41,4 +41,6 @@ services:
       timeout: 30s
       retries: 3
 
-#docker-airflow at init looks for a DB in 5432 port. https://github.com/puckel/docker-airflow/tree/1.10.0-5#configurating-airflow
+#docker-airflow at init looks for a DB in 5432 port. 
+#https://github.com/puckel/docker-airflow/tree/1.10.0-5#configurating-airflow
+

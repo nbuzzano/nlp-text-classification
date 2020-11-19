@@ -2,7 +2,6 @@ import re
 import os
 import time
 import numpy as np
-import pandas as pd
 from random import randint
 from functools import partial
 import pickle
