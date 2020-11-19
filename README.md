@@ -9,3 +9,5 @@ In this repository you can find the development of a service for an application 
 - `notebooks`: Here we explore the dataset, we look for insights that provide information to the business and in the modeling stage.
 
 - `source`: Here you can find custom tools, prediction machine learning models and locally the dataset is stored here.
+
+- `resources`: Take a look to the architecture plan inside this folder!
