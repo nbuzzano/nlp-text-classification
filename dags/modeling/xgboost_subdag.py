@@ -8,6 +8,7 @@ from sklearn.metrics import recall_score
 from sklearn.metrics import accuracy_score
 from functools import partial
 
+import pandas as pd
 from sklearn.preprocessing import LabelEncoder
 import xgboost
 
@@ -46,7 +47,7 @@ def init(main_path_, data_lake_, file_extension_):
 
 def get_cleaned_df():
 
-    df = data_lake.load_obj('df-cleaned.pkl')
+    df = pd.read_csv('source/features/' + data_lake.version + '/df-cleaned.csv')
     df_train_table = df[df.path == (main_path + 'train_set/')]
     df_test_table = df[df.path == (main_path + 'test_set/')]
 
@@ -63,7 +64,7 @@ def get_cleaned_df():
 
 def train_model(classifier, feature_vector_train, label, feature_vector_valid, valid_y, is_neural_net=False):
 
-    df = data_lake.load_obj('df-cleaned.pkl')
+    df = pd.read_csv('source/features/' + data_lake.version + '/df-cleaned.csv')
     letter_types = sorted(df.category.unique().tolist())
 
     # fit the training dataset on the classifier
@@ -92,7 +93,6 @@ def train_model(classifier, feature_vector_train, label, feature_vector_valid, v
         recall_info += str(item)
     
     msg = "\n" + str(classifier) + "\n" + "items_recall " + recall_info + "\n" + "accuracy_score " + str(accuracy) + "\n"
-    logger.info(msg)
     
     return msg
 

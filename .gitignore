@@ -9,6 +9,8 @@ source/utils/dist/
 source/utils/build/
 source/utils/test.py
 
+dags/modeling/private
+
 ## Virtual environment
 venv/
 .venv/

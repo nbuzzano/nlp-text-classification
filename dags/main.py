@@ -7,6 +7,8 @@ from airflow.operators.subdag_operator import SubDagOperator
 from datetime import timedelta
 import utils.data_lake_helper as dl_helper
 
+import utils.airflow_features as Features
+
 import preprocessing.raw_features as raw_features
 from preprocessing.raw_features import feature_extr_sub_dag
 
@@ -77,7 +79,7 @@ start >> vector_extr_subdag
 #================#
 
 def fit_lda():
-    lda_model = Feature.MyLDA(config=data_lake.load_config('lda_config.txt'))
+    lda_model = Features.MyLDA(config=data_lake.load_config('lda_config.txt'))
     xtrain_tfidf_ngram = data_lake.load_npz('xtrain_tfidf_ngram' + '.npz')
 
     X_topics = lda_model.model.fit_transform(xtrain_tfidf_ngram)

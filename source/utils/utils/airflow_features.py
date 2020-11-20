@@ -105,7 +105,7 @@ class SEC_Header(Feature):
         self.look_for_sec_headers = partial(look_for_text_list, sec_headers)
     
     def transform(self, text):
-        return look_for_sec_headers(text)
+        return self.look_for_sec_headers(text)
 
 class Response_Text(Feature):
     def __init__(self):
@@ -118,7 +118,7 @@ class Response_Text(Feature):
         self.look_for_rl_headers = partial(look_for_text_list, rl_headers)
     
     def transform(self, text):
-        return look_for_rl_headers(text)
+        return self.look_for_rl_headers(text)
 
 class Comment_Text(Feature):
     def __init__(self):
@@ -132,7 +132,7 @@ class Comment_Text(Feature):
         self.look_for_cl_headers = partial(look_for_text_list, cl_headers)
     
     def transform(self, text):
-        return look_for_cl_headers(text)
+        return self.look_for_cl_headers(text)
 
 
 #=========#=========#=========#=========#=========#=========#=========#=========#=========#=========#

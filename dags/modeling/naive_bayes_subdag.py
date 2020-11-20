@@ -12,6 +12,7 @@ from sklearn.metrics import accuracy_score
 from sklearn.preprocessing import LabelEncoder
 from features_utils import ModelTemplate
 from functools import partial
+import pandas as pd
 
 main_path = None
 data_lake = None
@@ -74,9 +75,11 @@ def prepare_data(df_):
 
 def get_cleaned_df():
 
-    df = data_lake.load_obj('df-cleaned.pkl')
-    df[feature] = data_lake_.load_obj('text_normalized' + '.pkl')
-    
+    df = pd.read_csv('source/features/' + data_lake.version + '/df-cleaned.csv')
+
+    feature = 'text_normalized'
+    df[feature] = data_lake.load_obj(feature + '.pkl')
+
     df_train_table = df[df.path == (main_path + 'train_set/')]
     df_test_table = df[df.path == (main_path + 'test_set/')]
 
@@ -92,7 +95,7 @@ def get_cleaned_df():
 
 def train_model(classifier, feature_vector_train, label, feature_vector_valid, valid_y, is_neural_net=False):
 
-    df = data_lake.load_obj('df-cleaned.pkl')
+    df = pd.read_csv('source/features/' + data_lake.version + '/df-cleaned.csv')
     letter_types = sorted(df.category.unique().tolist())
 
     # fit the training dataset on the classifier
@@ -121,7 +124,6 @@ def train_model(classifier, feature_vector_train, label, feature_vector_valid, v
         recall_info += str(item)
     
     msg = "\n" + str(classifier) + "\n" + "items_recall " + recall_info + "\n" + "accuracy_score " + str(accuracy) + "\n"
-    logger.info(msg)
     
     return msg
 
