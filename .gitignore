@@ -25,6 +25,7 @@ storage/files/
 *.idea
 
 ## won't push following extensions
+*.txt
 *.vec
 *.bin
 *.log

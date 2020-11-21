@@ -9,6 +9,10 @@ from sklearn import naive_bayes
 from sklearn.metrics import recall_score
 from sklearn.metrics import accuracy_score
 
+import os
+from datetime import datetime
+from sklearn.metrics import classification_report
+
 from sklearn.preprocessing import LabelEncoder
 from features_utils import ModelTemplate
 from functools import partial
@@ -93,6 +97,18 @@ def get_cleaned_df():
 
     return train_y, valid_y
 
+
+def create_report_folder():
+    #create version folder if not exists
+    path = 'source//ml-reports'
+    if not os.path.exists(path):
+        try:
+            os.makedirs(path)
+        except OSError as e:
+            if e.errno != errno.EEXIST:
+                raise
+
+
 def train_model(classifier, feature_vector_train, label, feature_vector_valid, valid_y, is_neural_net=False):
 
     df = pd.read_csv('source/features/' + data_lake.version + '/df-cleaned.csv')
@@ -103,29 +119,26 @@ def train_model(classifier, feature_vector_train, label, feature_vector_valid, v
     
     # predict the labels on validation dataset
     predictions = classifier.predict(feature_vector_valid)
+    recall = recall_score(valid_y, predictions, average=None)
     
-    if is_neural_net:
-        predictions = predictions.argmax(axis=-1)
-    
-    #get accuracy
-    accuracy = accuracy_score(predictions, valid_y)
-
-    #get items recall info
-    recall_info = ""
-    items_recall = recall_score(valid_y, predictions, average=None)
-    
-    if len(letter_types) != len(items_recall):
-        raise Exception('len(letter_types) != len(items_recall) ' + str(len(letter_types)) + ' != '+ str(len(items_recall)))
+    if len(letter_types) != len(recall):
+        raise Exception('len(letter_types) != len(recall) ' + str(len(letter_types)) + ' != '+ str(len(recall)))
         
-    #filtered_items_recall = filter(lambda x: x[0] == 'CL' or x[0] == 'RL' , zip(letter_types,items_recall))
-    filtered_items_recall = zip(letter_types, items_recall)
+    report = classification_report(valid_y, predictions, target_names=letter_types)
     
-    for item in filtered_items_recall:
-        recall_info += str(item)
+    try:
+        create_report_folder()
+        
+        path = 'source/ml-reports/'
+        report_name = 'nb-report-' + datetime.today().strftime('%Y-%m-%d-%Hhr%Mmin')
+        file = open(path + report_name + '.txt', "w") 
+        file.write(report) 
+        file.close() 
     
-    msg = "\n" + str(classifier) + "\n" + "items_recall " + recall_info + "\n" + "accuracy_score " + str(accuracy) + "\n"
-    
-    return msg
+    except:
+        raise Exception('problem opening and/or saving algorithm report')
+        
+    return report
 
 def create_trainable_model_node(get_df_fc, model_template):
     train_y, valid_y = get_df_fc()
