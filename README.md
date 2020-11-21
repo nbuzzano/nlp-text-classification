@@ -10,7 +10,7 @@ In this repository you can find the development of a service for an application 
 
 - `source`: Here you can find custom tools, prediction machine learning models. The input dataset is stored here.
 
-- `resources`: Take a look to the architecture plan inside this folder!
+- `resources`: Take a look to the architecture plan and how the Airflow pipeline looks here!
 
 ## Airflow credits
 
