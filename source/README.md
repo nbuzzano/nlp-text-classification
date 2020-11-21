@@ -7,14 +7,14 @@ In order to test this project, you should store the input data here with a folde
 		|-test_set.csv
 		|-
 		|-train_set/
-			|-612288.txt
-			|-612289.txt
-			|-etc
+			|-<text id>.txt
+			|-<text id>.txt
+			|-...
 		|-
 		|-test_set/
-			|-112288.txt
-			|-112289.txt
-			|-etc
+			|-<text id>.txt
+			|-<text id>.txt
+			|-...
 ```
 
 Where `train_set.csv` and `test_set.csv` are datasets with the following schema:
