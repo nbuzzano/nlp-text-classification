@@ -18,7 +18,6 @@ Several ML algorithms were trained and tested. Some of them were:
 1. Xgboost
 1. Stacking Ensemble algorithms
 
-
 ### Discussion:
 
 - `dags`: Airflow pipeline can be found here. Also `script` and `config` folders are consumed at Airflow init.
@@ -28,6 +27,11 @@ Several ML algorithms were trained and tested. Some of them were:
 - `source`: Here you can find custom tools, prediction machine learning models. The input dataset is stored here.
 
 - `resources`: Take a look to the architecture plan and how the Airflow pipeline looks here!
+
+### How can I test this?:
+1. Go to `source/` directory and store there the texts that you want to classify. A `README.md` file with an in deep explanation can be found there.
+2. run `docker-compose up` and docker will do all the work for you. Just wait a little until all the services are up and running.
+3. Paste `localhost:8081` url in your browser to open Airflow UI and run the pipeline.
 
 ### Next releases:
 
