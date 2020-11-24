@@ -113,13 +113,14 @@ def train_model(classifier, feature_vector_train, label, feature_vector_valid, v
         raise Exception('len(letter_types) != len(recall) ' + str(len(letter_types)) + ' != '+ str(len(recall)))
         
     report = classification_report(valid_y, predictions, target_names=letter_types)
+    path = 'source/ml-reports/'
+    report_name = 'xgb-report-' + datetime.today().strftime('%Y-%m-%d-%Hhr%Mmin')
+    report_path = path + report_name + '.txt'
     
     try:
         create_report_folder()
         
-        path = 'source/ml-reports/'
-        report_name = 'xgb-report-' + datetime.today().strftime('%Y-%m-%d-%Hhr%Mmin')
-        file = open(path + report_name + '.txt', "w") 
+        file = open(report_path, "w") 
         file.write(report) 
         file.close() 
     
@@ -130,6 +131,7 @@ def train_model(classifier, feature_vector_train, label, feature_vector_valid, v
         #MLflow
         mlflow.sklearn.log_model(classifier, "xgb-model")
         mlflow.log_artifact('source/configs/xgb_config.txt')
+        mlflow.log_artifact(report_path)
     
     return report
 
