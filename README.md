@@ -2,7 +2,7 @@
 
 In this repository you can find the development of a service for an application that analyzes public documents. The solutions covers preprocessing and classification of texts.
 
-To build it, different technologies were used. For example Apache Airflow, Docker and Spark regarding to data engineering side. Also, Keras and sklearn regarding to machine learning side.
+To build it, different technologies were used. For example Apache Airflow, Docker and Spark regarding to data engineering side. Also Keras, Sklearn, MLflow and others regarding to machine learning side.
 
 Several ML algorithms were trained and tested. Some of them were: 
 
@@ -33,9 +33,18 @@ Several ML algorithms were trained and tested. Some of them were:
 2. run `docker-compose up` and docker will do all the work for you. Just wait a little until all the services are up and running.
 3. Paste `localhost:8081` url in your browser to open Airflow UI and run the pipeline.
 
+### MLflow:
+Also **MLflow** was integrated in order to manage better reproducibility, deployment, and have a central model registry. The algorithms trained are being saved on `mlruns/` folder created by MLflow tool. So if you want to see training history using **mlflow ui**, should do something like:
+
+1. `docker exec -i -t <container-name> /bin/bash` to enter running container.
+2. `mlflow ui --host 0.0.0.0` to run mlflow ui process.
+3. Just type `http://0.0.0.0:5000` on your browser to access mlflow ui, that's it! 
+ 
+
+
 ### Next releases:
 
-For a second stage, the plan is to migrate to a cloud solution. This is, integrate **AWS S3** and migrate Airflow to **Google Cloud Composer**. Also integrate **MLflow** in order to manage better reproducibility, deployment, and a central model registry.
+For a second stage, the plan is to migrate to a cloud solution. This is, integrate **AWS S3** and migrate Airflow to **Google Cloud Composer**.
 
 
 ### Airflow credits
