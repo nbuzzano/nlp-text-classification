@@ -18,26 +18,16 @@ import xgboost
 
 from features_utils import ModelTemplate
 
-count_template = ModelTemplate(name='XGB_Count_Vectors', 
-                                    xvalid='xvalid_count.npz', 
-                                    xtrain='xtrain_count.npz',
-                                    classifier=xgboost.XGBClassifier())
-word_level_tfidf_template = ModelTemplate(name='XGB_WordLevel_TF-IDF', 
-                                            xvalid='xvalid_tfidf.npz', 
-                                            xtrain='xtrain_tfidf.npz',
-                                            classifier=xgboost.XGBClassifier())
-char_level_tfidf_template = ModelTemplate(name='XGB_CharLevel_Vectors', 
-                                            xvalid='xvalid_tfidf_ngram_chars.npz', 
-                                            xtrain='xtrain_tfidf_ngram_chars.npz',
-                                            classifier=xgboost.XGBClassifier())
+import mlflow
+import mlflow.sklearn
 
-templates = [count_template, 
-                word_level_tfidf_template, 
-                char_level_tfidf_template]
+mlflow.set_experiment(experiment_name='NLP text classifier')
 
 main_path = None
 data_lake = None
 file_extension = None
+
+templates = None
 
 def init(main_path_, data_lake_, file_extension_):
     global main_path
@@ -47,6 +37,36 @@ def init(main_path_, data_lake_, file_extension_):
     main_path = main_path_
     data_lake = data_lake_
     file_extension = file_extension_
+
+    create_templates()
+
+
+def get_xgb_model():
+    params = data_lake.load_config('xgb_config.txt')
+    xgb = xgboost.XGBClassifier()
+    xgb.set_params(**params)
+    return xgb
+
+
+def create_templates():
+    global templates
+    
+    count_template = ModelTemplate(name='XGB_Count_Vectors', 
+                                        xvalid='xvalid_count.npz', 
+                                        xtrain='xtrain_count.npz',
+                                        classifier=get_xgb_model())
+    word_level_tfidf_template = ModelTemplate(name='XGB_WordLevel_TF-IDF', 
+                                                xvalid='xvalid_tfidf.npz', 
+                                                xtrain='xtrain_tfidf.npz',
+                                                classifier=get_xgb_model())
+    char_level_tfidf_template = ModelTemplate(name='XGB_CharLevel_Vectors', 
+                                                xvalid='xvalid_tfidf_ngram_chars.npz', 
+                                                xtrain='xtrain_tfidf_ngram_chars.npz',
+                                                classifier=get_xgb_model())
+
+    templates = [count_template, 
+                    word_level_tfidf_template, 
+                    char_level_tfidf_template]
 
 
 def get_cleaned_df():
@@ -106,6 +126,11 @@ def train_model(classifier, feature_vector_train, label, feature_vector_valid, v
     except:
         raise Exception('problem opening and/or saving algorithm report')
         
+    with mlflow.start_run():
+        #MLflow
+        mlflow.sklearn.log_model(classifier, "xgb-model")
+        mlflow.log_artifact('source/configs/xgb_config.txt')
+    
     return report
 
 

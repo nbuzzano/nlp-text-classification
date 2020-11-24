@@ -3,13 +3,18 @@ source/dataset/
 *.ipynb_checkpoints
 logs/
 
+#install metadata
 source/features/
 source/utils/utils.egg-info/
 source/utils/dist/
 source/utils/build/
 source/utils/test.py
 
+#local private files.
 dags/modeling/private
+
+#mlflow folder
+mlruns/
 
 ## Virtual environment
 venv/

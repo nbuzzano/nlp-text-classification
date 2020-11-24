@@ -16,7 +16,7 @@ services:
       dockerfile: Dockerfile
       args:
         AIRFLOW_DEPS: gcp_api,s3
-        PYTHON_DEPS: sqlalchemy==1.2.0 pandas scipy nltk sklearn xgboost
+        PYTHON_DEPS: sqlalchemy==1.2.0 pandas scipy nltk sklearn xgboost mlflow
     restart: always
     depends_on:
       - postgres
@@ -31,6 +31,7 @@ services:
       - ./logs:/usr/local/airflow/logs
     ports:
       - "8081:8080"
+      - "5000:5000"
     command: webserver
     healthcheck:
       test: ["CMD-SHELL", "[ -f /usr/local/airflow/airflow-webserver.pid ]"]

@@ -4,8 +4,12 @@
 # BUILD: docker build --rm -t puckel/docker-airflow .
 # SOURCE: https://github.com/puckel/docker-airflow
 
-FROM python:3.7-stretch
+FROM python:3.7-slim-buster
 LABEL maintainer="Puckel_"
+
+#from a stackoverflow post, base image should be 3.7-stretch to run Spark
+#or at least, using 3.7-slim-buster I couldn't make it run
+#FROM python:3.7-stretch
 
 # Never prompt the user for choices on installation/configuration of packages
 ENV DEBIAN_FRONTEND noninteractive

@@ -35,7 +35,7 @@ class DataLake:
             return pickle.load(input)
         
     def load_config(self, file_name):
-        config_path = self.main_path + 'configs/' + self.version + "/"
+        config_path = self.main_path + 'configs/'
         file = open(config_path + file_name, "r")
         contents = file.read()
         return ast.literal_eval(contents)

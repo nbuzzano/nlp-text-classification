@@ -15,12 +15,21 @@ from sklearn.metrics import classification_report
 
 from sklearn.preprocessing import LabelEncoder
 from features_utils import ModelTemplate
+import utils.data_lake_helper as dl_helper
 from functools import partial
 import pandas as pd
+
+import mlflow
+import mlflow.sklearn
 
 main_path = None
 data_lake = None
 file_extension = None
+
+templates = None
+
+mlflow.set_experiment(experiment_name='NLP text classifier')
+
 
 def init(main_path_, data_lake_, file_extension_):
     global main_path
@@ -31,44 +40,55 @@ def init(main_path_, data_lake_, file_extension_):
     data_lake = data_lake_
     file_extension = file_extension_
 
+    create_templates()
 
-# Count Vectors as features
-########################################
+def get_nb_model():
+    params = data_lake.load_config('nb_config.txt')
+    nb = naive_bayes.MultinomialNB()
+    nb.set_params(**params)
+    return nb
 
-nb_count_template = ModelTemplate(name='NB_Count_Vectors', 
-                                xvalid='xvalid_count.npz', 
-                                xtrain='xtrain_count.npz',
-                                classifier=naive_bayes.MultinomialNB())
+def create_templates():
 
-# word level tf-idf
-###################
+    global templates
 
-nb_word_level_tfidf_template = ModelTemplate(name='NB_WordLevel_TF-IDF', 
-                                            xvalid='xvalid_tfidf.npz', 
-                                            xtrain='xtrain_tfidf.npz',
-                                            classifier=naive_bayes.MultinomialNB())
+    # Count Vectors as features
+    ########################################
 
-# ngram level tf-idf 
-####################
+    nb_count_template = ModelTemplate(name='NB_Count_Vectors', 
+                                    xvalid='xvalid_count.npz', 
+                                    xtrain='xtrain_count.npz',
+                                    classifier=get_nb_model())
 
-nb_ngram_level_tfidf_template = ModelTemplate(name='NB_NGramLevel_Vectors', 
-                                            xvalid='xvalid_tfidf_ngram.npz', 
-                                            xtrain='xtrain_tfidf_ngram.npz',
-                                            classifier=naive_bayes.MultinomialNB())
+    # word level tf-idf
+    ###################
 
-# characters level tf-idf
-#########################
+    nb_word_level_tfidf_template = ModelTemplate(name='NB_WordLevel_TF-IDF', 
+                                                xvalid='xvalid_tfidf.npz', 
+                                                xtrain='xtrain_tfidf.npz',
+                                                classifier=get_nb_model())
 
-nb_char_level_tfidf_template = ModelTemplate(name='NB_CharLevel_Vectors', 
-                                            xvalid='xvalid_tfidf_ngram_chars.npz', 
-                                            xtrain='xtrain_tfidf_ngram_chars.npz',
-                                            classifier=naive_bayes.MultinomialNB())
+    # ngram level tf-idf 
+    ####################
 
-templates = []
-templates = [nb_count_template,
-            nb_word_level_tfidf_template,
-            nb_ngram_level_tfidf_template,
-            nb_char_level_tfidf_template]
+    nb_ngram_level_tfidf_template = ModelTemplate(name='NB_NGramLevel_Vectors', 
+                                                xvalid='xvalid_tfidf_ngram.npz', 
+                                                xtrain='xtrain_tfidf_ngram.npz',
+                                                classifier=get_nb_model())
+
+    # characters level tf-idf
+    #########################
+
+    nb_char_level_tfidf_template = ModelTemplate(name='NB_CharLevel_Vectors', 
+                                                xvalid='xvalid_tfidf_ngram_chars.npz', 
+                                                xtrain='xtrain_tfidf_ngram_chars.npz',
+                                                classifier=get_nb_model())
+
+
+    templates = [nb_count_template,
+                nb_word_level_tfidf_template,
+                nb_ngram_level_tfidf_template,
+                nb_char_level_tfidf_template]
 
 
 def prepare_data(df_):
@@ -100,7 +120,7 @@ def get_cleaned_df():
 
 def create_report_folder():
     #create version folder if not exists
-    path = 'source//ml-reports'
+    path = 'source/ml-reports'
     if not os.path.exists(path):
         try:
             os.makedirs(path)
@@ -137,7 +157,13 @@ def train_model(classifier, feature_vector_train, label, feature_vector_valid, v
     
     except:
         raise Exception('problem opening and/or saving algorithm report')
-        
+    
+    with mlflow.start_run():
+        #MLflow
+        mlflow.sklearn.log_model(classifier, "nb-model")
+        #remove v3
+        mlflow.log_artifact('source/configs/nb_config.txt')
+    
     return report
 
 def create_trainable_model_node(get_df_fc, model_template):
