@@ -40,7 +40,7 @@ Also **MLflow** was integrated in order to manage better reproducibility, deploy
 2. `mlflow ui --host 0.0.0.0` to run mlflow ui process.
 3. Just type `http://0.0.0.0:5000` on your browser to access mlflow ui, that's it! 
  
-
+Also, if you want to inspect the ml reports manually, you can find them in the `source/ml-reports/` folder.
 
 ### Next releases:
 
